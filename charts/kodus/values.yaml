@@ -60,6 +60,8 @@ global:
     API_GITHUB_PRIVATE_KEY: ""
     # "Sign in with GitHub" (WEB_OAUTH_GITHUB_CLIENT_ID goes in config).
     WEB_OAUTH_GITHUB_CLIENT_SECRET: ""
+    # SMTP login for email notifications (API_SMTP_HOST etc. go in config).
+    API_SMTP_PASS: ""
 
   # --- Non-sensitive config (rendered into the ConfigMap) ---
   # {{ .Release.Name }} refs are resolved via `tpl` in configmap.yaml.
