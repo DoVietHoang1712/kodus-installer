@@ -50,8 +50,11 @@ required to be writable.
   mountPath: /tmp
 {{- end }}
 
+{{/* Accepts the root context, or {root, config} for a per-service limit at
+config.emptyDir.sizeLimits.tmp (the key upstream's chart 0.3.1 uses). */}}
 {{- define "kodus-common.tmpVolume" -}}
+{{- $config := .config | default dict -}}
 - name: tmp
   emptyDir:
-    sizeLimit: 100Mi
+    sizeLimit: {{ dig "emptyDir" "sizeLimits" "tmp" "100Mi" $config | quote }}
 {{- end }}
