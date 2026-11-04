@@ -67,6 +67,14 @@ spec:
         app.kubernetes.io/part-of: kodus
     spec:
       automountServiceAccountToken: false   # DB doesn't call the k8s API
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         {{- include "kodus-common.datastorePodSecurityContext" . | nindent 8 }}
       initContainers:

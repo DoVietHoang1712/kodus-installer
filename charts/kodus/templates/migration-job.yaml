@@ -21,6 +21,14 @@ spec:
         {{- include "kodus-common.serviceSelectorLabels" (dict "root" . "serviceName" "migrations") | nindent 8 }}
     spec:
       serviceAccountName: {{ include "kodus-common.serviceAccountName" . }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- include "kodus-common.imagePullSecrets" . | nindent 6 }}
       restartPolicy: OnFailure
       securityContext:

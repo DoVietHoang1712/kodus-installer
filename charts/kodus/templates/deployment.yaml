@@ -53,6 +53,14 @@ spec:
       {{- $drainMs := (dig "API_WORKER_DRAIN_TIMEOUT_MS" "" $.Values.global.config) | default "60000" | toString | atoi }}
       terminationGracePeriodSeconds: {{ add (div $drainMs 1000) ($.Values.terminationGraceBufferSeconds | default 30 | int) }}
       serviceAccountName: {{ include "kodus-common.serviceAccountName" $ }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- include "kodus-common.imagePullSecrets" $ | nindent 6 }}
       securityContext:
         {{- include "kodus-common.podSecurityContext" $ | nindent 8 }}

@@ -383,6 +383,11 @@ rbac:
   create: false
   rules: []
 
+# Pod placement for every Deployment, the migration Job and the bundled
+# datastores, e.g. to pin Kodus to a dedicated, tainted node pool.
+nodeSelector: {}
+tolerations: []
+
 podSecurityContext:
   fsGroup: 1001
   seccompProfile:
