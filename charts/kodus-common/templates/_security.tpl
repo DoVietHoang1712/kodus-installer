@@ -51,10 +51,27 @@ required to be writable.
 {{- end }}
 
 {{/* Accepts the root context, or {root, config} for a per-service limit at
-config.emptyDir.sizeLimits.tmp (the key upstream's chart 0.3.1 uses). */}}
+config.emptyDir.sizeLimits.tmp (the key upstream's chart 0.3.1 uses).
+Set config.ephemeralVolumes.tmp.size (and optionally .storageClassName) instead
+to back /tmp with a per-pod PVC, created and deleted with the pod, for a /tmp
+that outgrows the node's ephemeral disk (the worker clones repos there). */}}
 {{- define "kodus-common.tmpVolume" -}}
 {{- $config := .config | default dict -}}
+{{- $eph := dig "ephemeralVolumes" "tmp" dict $config -}}
 - name: tmp
+{{- if $eph.size }}
+  ephemeral:
+    volumeClaimTemplate:
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- with $eph.storageClassName }}
+        storageClassName: {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $eph.size | quote }}
+{{- else }}
   emptyDir:
     sizeLimit: {{ dig "emptyDir" "sizeLimits" "tmp" "100Mi" $config | quote }}
+{{- end }}
 {{- end }}
